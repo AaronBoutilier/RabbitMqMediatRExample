@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Example.RealTimeService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "commandLineArgs": "--network host"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+version: "3"
+services:
+  rabbit1:
+    image: rabbitmq:3-management
+    hostname: rabbit1
+    networks: 
+      - rabbitmq-cluster
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit1
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./definitions.json:/etc/rabbitmq/definitions.json"
+    ports:
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+      - "25672:25672"
+    deploy:
+      placement:
+        constraints: [node.labels.rabbitmq1 == true ]
+
+  rabbit2:
+    image: rabbitmq:3-management
+    hostname: rabbit2
+    networks: 
+      - rabbitmq-cluster
+    depends_on:
+      - rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit2
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./definitions.json:/etc/rabbitmq/definitions.json"
+    deploy:
+      placement:
+        constraints: [ node.labels.rabbitmq2 == true ]
+  
+  rabbit3:
+    image: rabbitmq:3-management
+    hostname: rabbit3
+    networks: 
+      - rabbitmq-cluster
+    depends_on:
+      - rabbit1
+      - rabbit2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret string"
+      RABBITMQ_NODENAME: rabbit3
+    volumes:
+      - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config"
+      - "./definitions.json:/etc/rabbitmq/definitions.json"
+    deploy:
+      placement:
+        constraints: [ node.labels.rabbitmq3 == true ]
+
+networks:
+  rabbitmq-cluster:
